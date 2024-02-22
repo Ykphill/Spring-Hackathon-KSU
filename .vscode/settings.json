@@ -1,0 +1,14 @@
+{
+    "ecl.forceProxySupport": true,
+    "ecl.launchConfiguration": "WorkshopCluster",
+    "ecl.targetCluster": {},
+    "ecl.eclccPath": "C:\\Program Files (x86)\\HPCCSystems\\9.0.4\\clienttools\\bin\\eclcc.exe"
+}
+/* Ignore the lines below, default json settings
+{
+    "ecl.launchConfiguration": "localhost",
+    "ecl.targetCluster": {
+        "localhost": "hthor"
+    },
+    "ecl.eclccPath": "C:\\Program Files\\HPCCSystems\\9.4.34\\clienttools\\bin\\eclcc.exe"
+}*/
