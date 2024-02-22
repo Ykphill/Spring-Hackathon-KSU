@@ -4,6 +4,21 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "name": "Training",
+            "type": "ecl",
+            "request": "launch",
+            "protocol": "http",
+            "serverAddress": "training.us-hpccsystems-dev.azure.lnrsg.io",
+            "port": 8010,
+            "targetCluster": "thor",
+            "rejectUnauthorized": true,
+            "resultLimit": 100,
+            "timeoutSecs": 60,
+            "user": "StrawhatsAI",
+            "password": ""
+        },
         {
             "name": "WorkshopCluster",
             "type": "ecl",
