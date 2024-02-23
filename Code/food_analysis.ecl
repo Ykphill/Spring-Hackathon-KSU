@@ -2,13 +2,12 @@ IMPORT $, STD;
 
 // Retrieve Website, latitude, longitude, county, population, state, city
 HMK := $.File_AllData;
-fireDS := HMK.FireDS;
-missingChildDS := HMK.mc_byStateDS;
+foodDS := HMK.FoodBankDS;
 citiesDS := HMK.City_DS;
 
-// OUTPUT(fireDS, NAMED('FireStation'));
+OUTPUT(foodDS, NAMED('foodBankDS'));
 // OUTPUT(missingChildDS, NAMED('MissingChildren'));
-// OUTPUT(citiesDS, NAMED('Cities'));
+OUTPUT(citiesDS, NAMED('Cities'));
 
 cityLayout := RECORD
     citiesDS.city;
@@ -20,10 +19,10 @@ cityLayout := RECORD
 END;
 
 locationLayout := RECORD
-    fireDS.city;
-    fireDS.state;
-    fireDS.zipcode;
-    fireDS.source_originator;
+    foodDS.city;
+    foodDS.state;
+    foodDS.zip_code;
+    foodDS.web_page;
 END;
 
 cityLocation := TABLE(
@@ -32,29 +31,24 @@ cityLocation := TABLE(
     city
 );
 
-
-OUTPUT(cityLocation, NAMED('CityLocation'));
-
-// newDS := TABLE(fireDS,
-// locationLayout,
-// city);
+// OUTPUT(cityLocation, NAMED('CityLocation'));
 
 missingChildWithCitiesLayout := RECORD
-    STRING name;
+    STRING food_bank_name;
     STRING state;
     STRING county;
     STRING county_fips;
-    DECIMAL lat;
-    DECIMAL long;
+    // DECIMAL lat;
+    // DECIMAL long;
 
 END;
 
-newerDS := JOIN(fireDS, 
+newDS := JOIN(foodDS, 
     cityLocation, 
     STD.Str.ToLowerCase(LEFT.city) = STD.Str.ToLowerCase(RIGHT.city),
     TRANSFORM(missingChildWithCitiesLayout,
-    SELF.lat := LEFT.ycoor;
-    SELF.long := LEFT.xcoor;
+    // SELF.lat := .latitude;
+    // SELF.long := LEFT.longitude;
     SELF.county := RIGHT.county_name;
     SELF.county_fips := RIGHT.county_fips;
     SELF.state := LEFT.state;
@@ -62,10 +56,12 @@ newerDS := JOIN(fireDS,
     SELF := RIGHT;
 ));
 
-OUTPUT(newerDS, NAMED('newerDS'));
+OUTPUT(newDS, NAMED('newDS'));
 
-fireByState := TABLE(newerDS,{state,cnt := COUNT(GROUP)}, state);
-OUTPUT(fireByState,, '~HMK::OUT::fireByState', NAMED('fireByState'));
+foodBankByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
+writeFoodBankByState := OUTPUT(foodBankByState,, '~HMK::OUT::foodBankByState', NAMED('foodBankByState'));
+writeFoodBankByState;
 
-fireByCounty := TABLE(newerDS,{county,cnt := COUNT(GROUP)}, county);
-OUTPUT(fireByCounty,, '~HMK::OUT::fireByState', NAMED('fireByCounty'));
+foodBankByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
+writeFoodBankByCounty := OUTPUT(foodBankByCounty,, '~HMK::OUT::foodBankByCounty', NAMED('foodBankByCounty'));
+writeFoodBankByCounty;

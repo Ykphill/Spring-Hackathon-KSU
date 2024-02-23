@@ -34,10 +34,6 @@ cityLocation := TABLE(
 
 OUTPUT(cityLocation, NAMED('CityLocation'));
 
-// newDS := TABLE(hospitalDS,
-// locationLayout,
-// city);
-
 missingChildWithCitiesLayout := RECORD
     STRING name;
     STRING state;
@@ -64,32 +60,9 @@ newDS := JOIN(hospitalDS,
 OUTPUT(newDS, NAMED('newDS'));
 
 hospitalByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
-OUTPUT(hospitalByState, NAMED('hospitalByState'));
+writeHospitalByState := OUTPUT(hospitalByState,, '~HMK::OUT::hospitalByState', NAMED('hospitalByState'));
+writeHospitalByState;
 
-hospitalByCounty := TABLE(newDS,{county,cnt := COUNT(GROUP)}, county);
-OUTPUT(hospitalByCounty, NAMED('hospitalByCounty'));
-
-// missingChildWithCitiesLayout := RECORD
-//     STRING firstname;
-//     STRING lastname;
-//     STRING state;
-//     DECIMAL lat;
-//     DECIMAL long;
-//     DECIMAL density;
-
-// END;
-
-// newDS := JOIN(missingChildDS, 
-//     cityLocation, 
-//     STD.Str.ToLowerCase(LEFT.missingcity) = STD.Str.ToLowerCase(RIGHT.city),
-//     TRANSFORM(missingChildWithCitiesLayout,
-//     SELF.lat := RIGHT.lat;
-//     SELF.long := RIGHT.lng;
-//     SELF.state := LEFT.missingstate;
-//     SELF.density := RIGHT.density;
-//     SELF := LEFT;
-//     SELF := RIGHT;
-//     ));
-
-// OUTPUT(missingChildDS(firstname = 'Tyler'));
-// OUTPUT(newDS, NAMED('NewDS'));
+hospitalByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
+writeHospitalByCounty := OUTPUT(hospitalByCounty,, '~HMK::OUT::hospitalByCounty', NAMED('hospitalByCounty'));
+writeHospitalByCounty;

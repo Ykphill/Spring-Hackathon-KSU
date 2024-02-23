@@ -65,7 +65,9 @@ newerDS := JOIN(policeDS,
 OUTPUT(newerDS, NAMED('newerDS'));
 
 policeByState := TABLE(newerDS,{state,cnt := COUNT(GROUP)}, state);
-OUTPUT(policeByState, NAMED('policeByState'));
+writePoliceByState := OUTPUT(policeByState,, '~HMK::OUT::policeByState', NAMED('policeByState'));
+writePoliceByState;
 
 policeByCounty := TABLE(newerDS,{county,cnt := COUNT(GROUP)}, county);
-OUTPUT(policeByCounty, NAMED('policeByCounty'));
+writePoliceByCounty := OUTPUT(policeByCounty,, '~HMK::OUT::policeByCounty', NAMED('policeByCounty'));
+writePoliceByCounty;
