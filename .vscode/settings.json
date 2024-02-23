@@ -1,6 +1,6 @@
 {
     "ecl.forceProxySupport": true,
-    "ecl.launchConfiguration": "WorkshopCluster",
+    "ecl.launchConfiguration": "External",
     "ecl.targetCluster": {},
     "ecl.eclccPath": "C:\\Program Files\\HPCCSystems\\9.4.34\\clienttools\\bin\\eclcc.exe"
 }
