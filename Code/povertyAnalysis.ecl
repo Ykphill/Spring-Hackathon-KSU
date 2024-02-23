@@ -5,6 +5,10 @@ PovertyStat :=HMK.pov_estimatesDS;
 
 OUTPUT(PovertyStat,NAMED('Poverty'));
 
-SortedAttribute := SORT (PovertyStat,attribute);
 
-OUTPUT(SortedAttribute,NAMED('Asc_ordered'));
+
+
+
+MCATribute := TABLE(PovertyStat,{attribute,cnt := COUNT(GROUP)},attribute);
+Out_MCATribute := OUTPUT(SORT(MCATribute,-cnt),NAMED('refined'));
+Out_MCATribute
