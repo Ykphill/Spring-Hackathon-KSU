@@ -1,1 +1,1 @@
-OUTPUT('HELLO');
+OUTPUT('people');
