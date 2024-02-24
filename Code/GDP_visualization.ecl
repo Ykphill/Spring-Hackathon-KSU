@@ -1,0 +1,6 @@
+IMPORT $.GDP_Percapita;
+
+OUTPUT(GDP_Percapita.StateGDPQ1,NAMED('GDP_Q1'));
+OUTPUT(GDP_Percapita.StateGDPQ2,NAMED('GDP_Q2'));
+OUTPUT(GDP_Percapita.StateGDPQ3,NAMED('GDP_Q3'));
+OUTPUT(GDP_Percapita.StateGDPQ4,NAMED('GDP_Q4'));
