@@ -32,12 +32,7 @@ cityLocation := TABLE(
     city
 );
 
-
 OUTPUT(cityLocation, NAMED('CityLocation'));
-
-// newDS := TABLE(fireDS,
-// locationLayout,
-// city);
 
 missingChildWithCitiesLayout := RECORD
     STRING name;
@@ -49,7 +44,7 @@ missingChildWithCitiesLayout := RECORD
 
 END;
 
-newerDS := JOIN(fireDS, 
+fireDepartmentDS := JOIN(fireDS, 
     cityLocation, 
     STD.Str.ToLowerCase(LEFT.city) = STD.Str.ToLowerCase(RIGHT.city),
     TRANSFORM(missingChildWithCitiesLayout,
@@ -62,10 +57,12 @@ newerDS := JOIN(fireDS,
     SELF := RIGHT;
 ));
 
-OUTPUT(newerDS, NAMED('newerDS'));
+OUTPUT(fireDepartmentDS, NAMED('fireDepartmentDS'));
 
-fireByState := TABLE(newerDS,{state,cnt := COUNT(GROUP)}, state);
-OUTPUT(fireByState,, '~HMK::OUT::fireByState', NAMED('fireByState'));
+fireDepartmentByState := TABLE(fireDepartmentDS,{state,cnt := COUNT(GROUP)}, state);
+writeFireDepartmentByState := OUTPUT(fireDepartmentByState,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByState'));
+writeFireDepartmentByState;
 
-fireByCounty := TABLE(newerDS,{county,cnt := COUNT(GROUP)}, county);
-OUTPUT(fireByCounty,, '~HMK::OUT::fireByState', NAMED('fireByCounty'));
+fireDepartmentByCounty := TABLE(fireDepartmentDS,{county,cnt := COUNT(GROUP)}, county);
+writeFireDepartmentByCounty := OUTPUT(fireDepartmentByCounty,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByCounty'));
+writeFireDepartmentByCounty;

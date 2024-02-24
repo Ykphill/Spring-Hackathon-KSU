@@ -49,7 +49,7 @@ missingChildWithCitiesLayout := RECORD
 
 END;
 
-newerDS := JOIN(policeDS, 
+policeStationDS := JOIN(policeDS, 
     cityLocation, 
     STD.Str.ToLowerCase(LEFT.city) = STD.Str.ToLowerCase(RIGHT.city),
     TRANSFORM(missingChildWithCitiesLayout,
@@ -62,12 +62,12 @@ newerDS := JOIN(policeDS,
     SELF := RIGHT;
 ));
 
-OUTPUT(newerDS, NAMED('newerDS'));
+OUTPUT(policeStationDS, NAMED('newerDS'));
 
-policeByState := TABLE(newerDS,{state,cnt := COUNT(GROUP)}, state);
+policeByState := TABLE(policeStationDS,{state,cnt := COUNT(GROUP)}, state);
 writePoliceByState := OUTPUT(policeByState,, '~HMK::OUT::policeByState', NAMED('policeByState'));
 writePoliceByState;
 
-policeByCounty := TABLE(newerDS,{county,cnt := COUNT(GROUP)}, county);
+policeByCounty := TABLE(policeStationDS,{county,cnt := COUNT(GROUP)}, county);
 writePoliceByCounty := OUTPUT(policeByCounty,, '~HMK::OUT::policeByCounty', NAMED('policeByCounty'));
 writePoliceByCounty;
