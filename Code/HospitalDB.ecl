@@ -6,7 +6,7 @@ EXPORT HospitalDB:= MODULE
     END;
 
     EXPORT countyLayout := RECORD
-    STRING county;
+    STRING county_fips;
     INTEGER cnt;
     END;
 

@@ -58,10 +58,16 @@ newDS := JOIN(foodDS,
 
 OUTPUT(newDS, NAMED('newDS'));
 
+
+
 foodBankByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
-writeFoodBankByState := OUTPUT(foodBankByState,, '~HMK::OUT::foodBankByState', NAMED('foodBankByState'));
+writeFoodBankByState := OUTPUT(foodBankByState,, '~HMK::OUT::foodBankByState', NAMED('foodBankByState'), OVERWRITE);
 writeFoodBankByState;
 
-foodBankByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
-writeFoodBankByCounty := OUTPUT(foodBankByCounty,, '~HMK::OUT::foodBankByCounty', NAMED('foodBankByCounty'));
+foodBankByCounty := TABLE(newDS,{county_fips, cnt := COUNT(GROUP)}, county_fips);
+writeFoodBankByCounty := OUTPUT(foodBankByCounty,, '~HMK::OUT::foodBankByCounty', NAMED('foodBankByCounty'), OVERWRITE);
 writeFoodBankByCounty;
+
+
+// foodBankByState := TABLE(newDS, {state,cnt := COUNT(GROUP)}, state);
+// OUTPUT(foodBankByState, NAMED('TESTING'));
