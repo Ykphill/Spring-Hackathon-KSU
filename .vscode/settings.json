@@ -1,7 +1,9 @@
 {
     "ecl.forceProxySupport": true,
     "ecl.launchConfiguration": "External",
-    "ecl.targetCluster": {},
+    "ecl.targetCluster": {
+        "External": "thor"
+    },
     "ecl.eclccPath": "C:\\Program Files\\HPCCSystems\\9.4.34\\clienttools\\bin\\eclcc.exe"
 }
 /* Ignore the lines below, default json settings

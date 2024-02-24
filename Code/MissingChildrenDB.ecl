@@ -1,23 +1,11 @@
-// Later on Figure How to create index and build new datasets
-
-// WriteNewDS      := OUTPUT(CleanChurchFIPS,,'~HMK::OUT::Churches',NAMED('WriteDS'),OVERWRITE);                                          
-// CleanChurchesDS    := DATASET('~HMK::OUT::Churches',CleanChurchRec,FLAT);
-
-// //Declare and Build Indexes (special datasets that can be used in the ROXIE data delivery cluster
-// CleanChurchIDX     := INDEX(CleanChurchesDS,{city,state},{CleanChurchesDS},'~HMK::IDX::Church::CityPay');
-// CleanChurchFIPSIDX := INDEX(CleanChurchesDS,{PrimaryFIPS},{CleanChurchesDS},'~HMK::IDX::Church::FIPSPay');
-// BuildChurchIDX     := BUILD(CleanChurchIDX,NAMED('BldIDX1'),OVERWRITE);
-// BuildChurchFIPSIDX := BUILD(CleanChurchFIPSIDX,NAMED('BLDIDX2'),OVERWRITE);
-
 EXPORT MissingChildrenDB:= MODULE
-    // OUTPUT(SORT(newDS, -yearOfMissing, -monthOfMissing, -dayOfMissing), NAMED('NewDataset'));
     EXPORT stateLayout := RECORD
     STRING state;
     INTEGER cnt;
     END;
 
     EXPORT countyLayout := RECORD
-    STRING county;
+    STRING county_lips;
     INTEGER cnt;
     END;
 
