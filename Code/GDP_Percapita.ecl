@@ -1,0 +1,3 @@
+IMPORT $ AS CODE;
+HMK:= CODE.;
+
