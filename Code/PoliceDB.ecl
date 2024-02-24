@@ -10,8 +10,15 @@ EXPORT PoliceDB:= MODULE
     INTEGER cnt;
     END;
 
-    EXPORT policeStateDS := DATASET('~HMK::OUT::fireStationByState',stateLayout,FLAT);
+    EXPORT fipsLayout := RECORD
+        STRING county_fips;
+        INTEGER cnt;
+    END;
 
-    EXPORT policeCountyDS:= DATASET('~HMK::OUT::fireStationByCounty',countyLayout,FLAT);
+    EXPORT policeStateDS := DATASET('~HMK::OUT::policeByState',stateLayout,FLAT);
+
+    EXPORT policeCountyDS:= DATASET('~HMK::OUT::policeByCounty',countyLayout,FLAT);
+
+    EXPORT policeFipDS := DATASET('~HMK::OUT::policeByFips', fipsLayout, FLAT);
 
 END;

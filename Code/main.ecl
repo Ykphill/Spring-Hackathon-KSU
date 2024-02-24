@@ -20,5 +20,3 @@ StateGDP := DATASET('~hmk::out::stategdp::state_gdp.csv', StateGDPLayout, CSV(HE
 OUTPUT(StateGDP, NAMED('StateGDP'));
 
 // SORT(FoodBankDB.foodBankStateDS, -cnt);
-
-VISUALIZER.

@@ -62,12 +62,16 @@ policeStationDS := JOIN(policeDS,
     SELF := RIGHT;
 ));
 
-OUTPUT(policeStationDS, NAMED('newerDS'));
+OUTPUT(policeStationDS, NAMED('policeStationDS'));
 
 policeByState := TABLE(policeStationDS,{state,cnt := COUNT(GROUP)}, state);
-writePoliceByState := OUTPUT(policeByState,, '~HMK::OUT::policeByState', NAMED('policeByState'));
+writePoliceByState := OUTPUT(policeByState,, '~HMK::OUT::policeByState', NAMED('policeByState'),OVERWRITE);
 writePoliceByState;
 
 policeByCounty := TABLE(policeStationDS,{county,cnt := COUNT(GROUP)}, county);
-writePoliceByCounty := OUTPUT(policeByCounty,, '~HMK::OUT::policeByCounty', NAMED('policeByCounty'));
+writePoliceByCounty := OUTPUT(policeByCounty,, '~HMK::OUT::policeByCounty', NAMED('policeByCounty'),OVERWRITE);
 writePoliceByCounty;
+
+policeByFips := TABLE(policeStationDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
+writePoliceByFips := OUTPUT(policeByFips,, '~HMK::OUT::policeByFips', NAMED('policeByFips'),OVERWRITE);
+writePoliceByFips;

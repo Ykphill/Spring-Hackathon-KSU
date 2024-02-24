@@ -60,9 +60,9 @@ fireDepartmentDS := JOIN(fireDS,
 OUTPUT(fireDepartmentDS, NAMED('fireDepartmentDS'));
 
 fireDepartmentByState := TABLE(fireDepartmentDS,{state,cnt := COUNT(GROUP)}, state);
-writeFireDepartmentByState := OUTPUT(fireDepartmentByState,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByState'));
+writeFireDepartmentByState := OUTPUT(fireDepartmentByState,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByState'),OVERWRITE);
 writeFireDepartmentByState;
 
 fireDepartmentByCounty := TABLE(fireDepartmentDS,{county,cnt := COUNT(GROUP)}, county);
-writeFireDepartmentByCounty := OUTPUT(fireDepartmentByCounty,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByCounty'));
+writeFireDepartmentByCounty := OUTPUT(fireDepartmentByCounty,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByCounty'),OVERWRITE);
 writeFireDepartmentByCounty;
