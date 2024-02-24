@@ -65,12 +65,6 @@ newDS := JOIN(missingChildDS,
 // OUTPUT the SORTED new Dataset
 OUTPUT(SORT(newDS, -yearOfMissing, -monthOfMissing, -dayOfMissing), NAMED('NewDataset'));
 
-TEST_RECORD := RECORD
-    STRING state; 
-    INTEGER cnt;
-END;
-
-
 MissingChildrenByStateDS := TABLE(newDS,{state,cnt := COUNT(GROUP)},state);
 WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
 // OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
@@ -229,9 +223,6 @@ OUTPUT(CORRELATION(MissingChildren_fire_Name, MissingChildren_fire_Name.missing_
 
 // OUTPUT(PoliceDB.policeCountyDS);
 // OUTPUT(TABLE(ResultName, ratio_layout),, '~HMK::OUT::6000', NAMED('MissingChildrenPopulationRatio'), OVERWRITE);
-
-
-
 viz_miss_pop_ratio := Visualizer.Choropleth.USCounties('MissingChildrenPopChor',, 'MissingChildrenPopulationRatio');
 viz_miss_pop_ratio;
 

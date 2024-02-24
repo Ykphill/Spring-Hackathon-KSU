@@ -23,41 +23,60 @@ StateGDPLayout := RECORD
     DECIMAL Q4;
 END;
 
-StateGDP := DATASET('~hmk::out::stategdp::state_gdp.csv', StateGDPLayout, CSV(HEADING(1)));
-OUTPUT(StateGDP, NAMED('StateGDP'));
+StateGDP_Rusty := DATASET('~hmk::out::stategdp::state_gdp.csv', StateGDPLayout, CSV(HEADING(1)));
+StateGDP_Cleaned := JOIN(
+    
+)
 
-OUTPUT(FoodBankDB.foodBankStateDS,, '~HMK::OUT::1010',  NAMED('FoodBanksState'), OVERWRITE);
-VISUALIZER.Choropleth.USStates('FoodBankStateChoropleth',, 'FoodBanksState' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
+StateGDPLayoutQ1 := RECORD
+    StateGDP.GeoFips;
+    // state := StateGDP.GeoName;
+    StateGDP.Q1;
+END;
 
-OUTPUT(FoodBankDB.foodBankCountyDS,, '~HMK::OUT::1011', NAMED('FoodBanksCounty'), OVERWRITE);
-VISUALIZER.Choropleth.USCounties('FoodBankCountyChoropleth',, 'FoodBanksCounty');
+StateGDPLayoutQ2 := RECORD
+    StateGDP.GeoFips;
+    // state := StateGDP.GeoName;
+    StateGDP.Q2;
+END;
 
-OUTPUT(HospitalDB.HospitalStateDS ,, '~HMK::OUT::1020',  NAMED('HospitalState'), OVERWRITE);
-VISUALIZER.Choropleth.USStates('HospitalStateChoropleth',, 'HospitalState');
+StateGDPLayoutQ3 := RECORD
+    StateGDP.GeoFips;
+    // state := StateGDP.GeoName;
+    StateGDP.Q3;
+END;
 
-OUTPUT(HospitalDB.HospitalCountyDS,, '~HMK::OUT::1021', NAMED('HospitalCounty'), OVERWRITE);
-VISUALIZER.Choropleth.USCounties('HospitalCountyChoropleth',, 'HospitalCounty');
+StateGDPLayoutQ4 := RECORD
+    StateGDP.GeoFips;
+    // state := StateGDP.GeoName;
+    StateGDP.Q4;
+END;
 
-OUTPUT(MissingChildrenDB.MCStateDS,, '~HMK::OUT::1030',  NAMED('MissingChildrenState'), OVERWRITE);
-VISUALIZER.Choropleth.USStates('MissingChildrenStateChoropleth',, 'MissingChildrenState' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
+STD.
+OUTPUT(TABLE(StateGDP, StateGDPLayoutQ1),, '~HMK::OUT::1070', NAMED('StateGDPQ1'), OVERWRITE);
+OUTPUT(TABLE(StateGDP, StateGDPLayoutQ2),, '~HMK::OUT::1071', NAMED('StateGDPQ2'), OVERWRITE);
+OUTPUT(TABLE(StateGDP, StateGDPLayoutQ3),, '~HMK::OUT::1072', NAMED('StateGDPQ3'), OVERWRITE);
+OUTPUT(TABLE(StateGDP, StateGDPLayoutQ4),, '~HMK::OUT::1073', NAMED('StateGDPQ4'), OVERWRITE);
 
-OUTPUT(MissingChildrenDB.MCCountyDS,, '~HMK::OUT::1031', NAMED('MissingChildrenCounty'), OVERWRITE);
-VISUALIZER.Choropleth.USCounties('MissingChildrenCountyChoropleth',, 'MissingChildrenCounty');
+VISUALIZER.Choropleth.USStates('StateGDPQ1_NAME',, 'StateGDPQ1' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
+VISUALIZER.Choropleth.USStates('StateGDPQ2_NAME',, 'StateGDPQ2' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
+VISUALIZER.Choropleth.USStates('StateGDPQ3_NAME',, 'StateGDPQ3' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
+VISUALIZER.Choropleth.USStates('StateGDPQ4_NAME',, 'StateGDPQ4' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
 
 // OUTPUT(FoodBankDB.foodBankStateDS,, '~HMK::OUT::1010',  NAMED('FoodBanksState'), OVERWRITE);
-// VISUALIZER.Choropleth.USStates('FoodBankStateChoropleth',, 'FoodBanksState');
+// VISUALIZER.Choropleth.USStates('FoodBankStateChoropleth',, 'FoodBanksState' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
 
 // OUTPUT(FoodBankDB.foodBankCountyDS,, '~HMK::OUT::1011', NAMED('FoodBanksCounty'), OVERWRITE);
 // VISUALIZER.Choropleth.USCounties('FoodBankCountyChoropleth',, 'FoodBanksCounty');
 
-// OUTPUT(FoodBankDB.foodBankStateDS,, '~HMK::OUT::1010',  NAMED('FoodBanksState'), OVERWRITE);
-// VISUALIZER.Choropleth.USStates('FoodBankStateChoropleth',, 'FoodBanksState');
+// OUTPUT(HospitalDB.HospitalStateDS ,, '~HMK::OUT::1020',  NAMED('HospitalState'), OVERWRITE);
+// VISUALIZER.Choropleth.USStates('HospitalStateChoropleth',, 'HospitalState');
 
-// OUTPUT(FoodBankDB.foodBankCountyDS,, '~HMK::OUT::1011', NAMED('FoodBanksCounty'), OVERWRITE);
-// VISUALIZER.Choropleth.USCounties('FoodBankCountyChoropleth',, 'FoodBanksCounty');
+// OUTPUT(HospitalDB.HospitalCountyDS,, '~HMK::OUT::1021', NAMED('HospitalCounty'), OVERWRITE);
+// VISUALIZER.Choropleth.USCounties('HospitalCountyChoropleth',, 'HospitalCounty');
 
-// OUTPUT(FoodBankDB.foodBankStateDS,, '~HMK::OUT::1010',  NAMED('FoodBanksState'), OVERWRITE);
-// VISUALIZER.Choropleth.USStates('FoodBankStateChoropleth',, 'FoodBanksState');
+// OUTPUT(MissingChildrenDB.MCStateDS,, '~HMK::OUT::1030',  NAMED('MissingChildrenState'), OVERWRITE);
+// VISUALIZER.Choropleth.USStates('MissingChildrenStateChoropleth',, 'MissingChildrenState' ,,, DATASET([{'palleteID', 'PuBuGn'}], VISUALIZER.KeyValueDef));
 
-// OUTPUT(FoodBankDB.foodBankCountyDS,, '~HMK::OUT::1011', NAMED('FoodBanksCounty'), OVERWRITE);
-// VISUALIZER.Choropleth.USCounties('FoodBankCountyChoropleth',, 'FoodBanksCounty');
+// OUTPUT(MissingChildrenDB.MCCountyDS,, '~HMK::OUT::1031', NAMED('MissingChildrenCounty'), OVERWRITE);
+// VISUALIZER.Choropleth.USCounties('MissingChildrenCountyChoropleth',, 'MissingChildrenCounty');
