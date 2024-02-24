@@ -60,9 +60,9 @@ newDS := JOIN(hospitalDS,
 OUTPUT(newDS, NAMED('newDS'));
 
 hospitalByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
-writeHospitalByState := OUTPUT(hospitalByState,, '~HMK::OUT::hospitalByState', NAMED('hospitalByState'));
+writeHospitalByState := OUTPUT(hospitalByState,, '~HMK::OUT::hospitalByState', NAMED('hospitalByState'), OVERWRITE);
 writeHospitalByState;
 
 hospitalByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
-writeHospitalByCounty := OUTPUT(hospitalByCounty,, '~HMK::OUT::hospitalByCounty', NAMED('hospitalByCounty'));
+writeHospitalByCounty := OUTPUT(hospitalByCounty,, '~HMK::OUT::hospitalByCounty', NAMED('hospitalByCounty'), OVERWRITE);
 writeHospitalByCounty;
