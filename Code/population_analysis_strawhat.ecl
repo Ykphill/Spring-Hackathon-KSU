@@ -1,7 +1,8 @@
 IMPORT $ AS CODE;
 IMPORT STD;
 
-HMK:= CODE.File_AllData;
+HMK:= $.File_AllData;
+
 
 PopStat :=HMK.pop_estimatesDS;
 

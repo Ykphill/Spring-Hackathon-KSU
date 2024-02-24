@@ -25,10 +25,3 @@ MissingChildren_Food_Name := JOIN(
 ));
 
 OUTPUT(MissingChildrenDB.MCCountyDS);
-// OUTPUT(ResultName, NAMED('NEWDS'));
-
-// HospitalDB.hospitalByCounty;
-// FoodBankDB.foodBankByCounty;
-// PoliceDB.policeByFips;
-// FireDepartmentDB.fireDepartmentCountyDS;
-
