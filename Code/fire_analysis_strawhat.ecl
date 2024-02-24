@@ -63,6 +63,6 @@ fireDepartmentByState := TABLE(fireDepartmentDS,{state,cnt := COUNT(GROUP)}, sta
 writeFireDepartmentByState := OUTPUT(fireDepartmentByState,, '~HMK::OUT::fireDepartmentByState', NAMED('fireDepartmentByState'),OVERWRITE);
 writeFireDepartmentByState;
 
-fireDepartmentByCounty := TABLE(fireDepartmentDS,{county,cnt := COUNT(GROUP)}, county);
+fireDepartmentByCounty := TABLE(fireDepartmentDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
 writeFireDepartmentByCounty := OUTPUT(fireDepartmentByCounty,, '~HMK::OUT::fireDepartmentByCounty', NAMED('fireDepartmentByCounty'),OVERWRITE);
 writeFireDepartmentByCounty;

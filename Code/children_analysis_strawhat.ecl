@@ -2,15 +2,13 @@ IMPORT $, STD;
 
 // Missing Children Data Analysis
 
+//  Linking up the Datasets  
 HMK := $.File_AllData;
 missingChildDS := HMK.mc_byStateDS;
 citiesDS := HMK.City_DS;
 hospitalDS := HMK.HospitalDS;
 
-// OUTPUT(citiesDS, NAMED('CITIES'));
-// OUTPUT(missingChildDS, NAMED('MissingChildren'));
-
-// Location Layout for Specifying Cities and Latitude, Longitude, Density
+// RECORD for city layouts
 cityLayout := RECORD
     citiesDS.city;
     citiesDS.county_name;
@@ -20,7 +18,7 @@ cityLayout := RECORD
     citiesDS.density;
 END;
 
-// Database Table with unique city as key
+// Database Table with ciy being GROUPED
 cityLocation := TABLE(
     citiesDS,
     cityLayout,
@@ -64,7 +62,9 @@ newDS := JOIN(missingChildDS,
     SELF := RIGHT;
 ));
 
+// OUTPUT the SORTED new Dataset
 OUTPUT(SORT(newDS, -yearOfMissing, -monthOfMissing, -dayOfMissing), NAMED('NewDataset'));
+
 TEST_RECORD := RECORD
     STRING state; 
     INTEGER cnt;
@@ -72,42 +72,180 @@ END;
 
 
 MissingChildrenByStateDS := TABLE(newDS,{state,cnt := COUNT(GROUP)},state);
-// WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
-OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
+WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
+// OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
 
-
-MissingChildrenByCountyDS:= TABLE(newDS,{county,cnt := COUNT(GROUP)},county);
-// WriteNewMissingChildrenByCountyDS := OUTPUT(MissingChildrenByCountyDS,,'~HMK::OUT::MissingChildrenByCountyDS', NAMED('WriteMissingChildrenByCountyDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByCountyDS,-cnt),NAMED('MissingChildrenByCounty'));
+MissingChildrenByCountyDS:= TABLE(newDS,{county_fips,cnt := COUNT(GROUP)},county_fips);
+WriteNewMissingChildrenByCountyDS := OUTPUT(MissingChildrenByCountyDS,,'~HMK::OUT::MissingChildrenByCountyDS', NAMED('WriteMissingChildrenByCountyDS'), OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByCountyDS,-cnt), NAMED('MissingChildrenByCounty'));
 
 MissingChildrenByMonthDS:= TABLE(newDS,{monthOfMissing,cnt := COUNT(GROUP)},monthOfMissing);
-// WriteNewMissingChildrenByMonthDS := OUTPUT(MissingChildrenByMonthDS,,'~HMK::OUT::MissingChildrenByMonthDS', NAMED('WriteMissingChildrenByMonthDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByMonthDS,-monthOfMissing),NAMED('MissingChildrenByMonth'));
+WriteNewMissingChildrenByMonthDS := OUTPUT(MissingChildrenByMonthDS,,'~HMK::OUT::MissingChildrenByMonthDS', NAMED('WriteMissingChildrenByMonthDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByMonthDS,-monthOfMissing),NAMED('MissingChildrenByMonth'));
 
 MissingChildrenByYearDS:= TABLE(newDS,{yearOfMissing,cnt := COUNT(GROUP)},yearOfMissing);
-// WriteNewMissingChildrenByYearDS := OUTPUT(MissingChildrenByYearDS,,'~HMK::OUT::MissingChildrenByYearDS', NAMED('WriteMissingChildrenByYearDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByYearDS,yearOfMissing),NAMED('MissingChildrenByYear'));
+WriteNewMissingChildrenByYearDS := OUTPUT(MissingChildrenByYearDS,,'~HMK::OUT::MissingChildrenByYearDS', NAMED('WriteMissingChildrenByYearDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByYearDS,yearOfMissing),NAMED('MissingChildrenByYear'));
 
 MissingChildrenByDayDS:= TABLE(newDS,{dayOfMissing,cnt := COUNT(GROUP)},dayOfMissing);
-// WriteNewMissingChildrenByDayDS := OUTPUT(MissingChildrenByDayDS,,'~HMK::OUT::MissingChildrenByDayDS', NAMED('WriteMissingChildrenByDayDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByDayDS,-dayOfMissing),NAMED('MissingChildrenByDay'));
-
-// SEQUENTIAL(WriteNewMissingChildrenByStateDS,WriteNewMissingChildrenByCountyDS,MissingChildrenByCountyDS2);
-
-IMPORT Visualizer;                    
-                    
-viz_year := Visualizer.MultiD.Area('area',, 'MissingChildrenByYear');
-viz_year;
- 
-viz_month := Visualizer.MultiD.Bar('bar',, 'MissingChildrenByMonth');
-viz_month;
-
-viz_day := Visualizer.MultiD.Column('column',, 'MissingChildrenByDay');
-viz_day;
+WriteNewMissingChildrenByDayDS := OUTPUT(MissingChildrenByDayDS,,'~HMK::OUT::MissingChildrenByDayDS', NAMED('WriteMissingChildrenByDayDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByDayDS,-dayOfMissing),NAMED('MissingChildrenByDay'));
 
 
-// data_usStates := OUTPUT(_usStates, NAMED('choro_usStates'));  
-// data_usStates;  
 
-viz_states := Visualizer.Choropleth.USStates('usStates',, 'MissingChildrenByState');  
-viz_states;
+IMPORT Visualizer;      
+
+PopStat :=HMK.pop_estimatesDS;
+
+// OUTPUT(PopStat,NAMED('Population'));
+//POP Estimate of 2022
+MCATribute := PopStat(attribute='POP_ESTIMATE_2022');
+PopEstimate :=  Table(MCATribute);
+
+population := PopEstimate(STD.Str.Contains(PopEstimate.area_name, 'County', TRUE));
+
+population_layout := RECORD
+    fip_codes := IF((INTEGER) population.fips_code < 10000, '0' + (STRING) population.fips_code, (STRING) population.fips_code);
+    population.value;
+END;
+
+
+// TABLE(population, population_layout);
+
+Record_Structure := RECORD
+    STRING county_fips;
+    INTEGER missing_count;
+    INTEGER population;
+    DECIMAL missing_to_population_ratio;
+END;
+
+ResultName := JOIN(
+    MissingChildrenByCountyDS,
+    TABLE(population, population_layout),
+    LEFT.county_fips  =  RIGHT.fip_codes
+    ,transform(Record_Structure, 
+                SELF.missing_count := LEFT.cnt; 
+                SELF.population := RIGHT.value; 
+                SELF.missing_to_population_ratio := (LEFT.cnt / RIGHT.value) * 1000;
+                SELF := LEFT; 
+                SELF := RIGHT;
+                SELF := [];
+    ),INNER,LOCAL);
+
+ratio_layout := RECORD
+    ResultName.county_fips;
+    ResultName.missing_to_population_ratio;
+END;
+
+HospitalDB := $.HospitalDB;
+FoodBankDB := $.FoodBankDB;
+MissingChildrenDB := $.MissingChildrenDB;
+PoliceDB := $.PoliceDB;
+FireDepartmentDB := $.FireDepartmentDB;
+
+missingChildren_food_layout := RECORD
+    STRING county_fips;
+    INTEGER missing_count;
+    INTEGER food_count;
+END;
+
+MissingChildren_Food_Name := JOIN(
+    MissingChildrenByCountyDS,
+    FoodBankDB.foodBankCountyDS, 
+    LEFT.county_fips  =  RIGHT.county_fips,    
+    TRANSFORM(missingChildren_food_layout, 
+            SELF.missing_count := LEFT.cnt;
+            SELF.food_count := RIGHT.cnt;
+            SELF := LEFT; 
+            SELF := RIGHT;
+            SELF := [];
+));
+
+// OUTPUT(MissingChildren_Food_Name, NAMED('MissingChildren_Food_Name'));
+OUTPUT(CORRELATION(MissingChildren_Food_Name, MissingChildren_Food_Name.missing_count, MissingChildren_Food_Name.food_count), NAMED('MissingChildren_Food_Corr'));
+
+missingChildren_hospital_layout := RECORD
+    STRING county_fips;
+    INTEGER missing_count;
+    INTEGER hospital_count;
+END;
+
+MissingChildren_hospital_Name := JOIN(
+    MissingChildrenByCountyDS,
+    HospitalDB.HospitalCountyDS, 
+    LEFT.county_fips  =  RIGHT.county_fips,    
+    TRANSFORM(missingChildren_hospital_layout, 
+            SELF.missing_count := LEFT.cnt;
+            SELF.hospital_count := RIGHT.cnt;
+            SELF := LEFT; 
+            SELF := RIGHT;
+            SELF := [];
+));
+
+// OUTPUT(MissingChildren_Food_Name, NAMED('MissingChildren_Hospital_Name'));
+OUTPUT(CORRELATION(MissingChildren_hospital_Name, MissingChildren_hospital_Name.missing_count, MissingChildren_hospital_Name.hospital_count), NAMED('MissingChildren_Hospital_Corr'));
+
+missingChildren_police_layout := RECORD
+    STRING county_fips;
+    INTEGER missing_count;
+    INTEGER police_count;
+END;
+
+MissingChildren_police_Name := JOIN(
+    MissingChildrenByCountyDS,
+    PoliceDB.policeFipDS, 
+    LEFT.county_fips  =  RIGHT.county_fips,    
+    TRANSFORM(missingChildren_police_layout, 
+            SELF.missing_count := LEFT.cnt;
+            SELF.police_count := RIGHT.cnt;
+            SELF := LEFT; 
+            SELF := RIGHT;
+            SELF := [];
+));
+
+// OUTPUT(MissingChildren_Food_Name, NAMED('MissingChildren_Hospital_Name'));
+OUTPUT(CORRELATION(MissingChildren_police_Name, MissingChildren_police_Name.missing_count, MissingChildren_police_Name.police_count), NAMED('MissingChildren_Police_Corr'));
+
+missingChildren_fire_layout := RECORD
+    STRING county_fips;
+    INTEGER missing_count;
+    INTEGER fire_dep_count;
+END;
+
+MissingChildren_fire_Name := JOIN(
+    MissingChildrenByCountyDS,
+    FireDepartmentDB.fireDepartmentCountyDS, 
+    LEFT.county_fips  =  RIGHT.county_fips,    
+    TRANSFORM(missingChildren_fire_layout, 
+            SELF.missing_count := LEFT.cnt;
+            SELF.fire_dep_count := RIGHT.cnt;
+            SELF := LEFT; 
+            SELF := RIGHT;
+            SELF := [];
+));
+
+// OUTPUT(MissingChildren_fire_Name, NAMED('MissingChildren_Hospital_Name'));
+OUTPUT(CORRELATION(MissingChildren_fire_Name, MissingChildren_fire_Name.missing_count, MissingChildren_fire_Name.fire_dep_count), NAMED('MissingChildren_FIRE_Corr'));
+
+// OUTPUT(PoliceDB.policeCountyDS);
+// OUTPUT(TABLE(ResultName, ratio_layout),, '~HMK::OUT::6000', NAMED('MissingChildrenPopulationRatio'), OVERWRITE);
+
+
+
+viz_miss_pop_ratio := Visualizer.Choropleth.USCounties('MissingChildrenPopChor',, 'MissingChildrenPopulationRatio');
+viz_miss_pop_ratio;
+
+// Visualize the Missing Children By Year
+// viz_year := Visualizer.MultiD.Area('yearArea',, 'MissingChildrenByYear');
+// viz_year;
+
+// // Visualize the Missing Children By Month using a Column Graph
+// viz_month := Visualizer.MultiD.Column('monthColumn',, 'MissingChildrenByMonth');
+// viz_month;
+
+// // Visualize the Missing Children By Month using a  Graph
+// viz_day := Visualizer.MultiD.Column('dayColumn',, 'MissingChildrenByDay');
+// viz_day;
+
+// viz_counties := Visualizer.Choropleth.USCounties('USCounties',, 'MissingChildrenByCounty');
+// viz_counties;
