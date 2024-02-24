@@ -72,42 +72,34 @@ END;
 
 
 MissingChildrenByStateDS := TABLE(newDS,{state,cnt := COUNT(GROUP)},state);
-// WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
-OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
+WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
+// OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
 
-
-MissingChildrenByCountyDS:= TABLE(newDS,{county,cnt := COUNT(GROUP)},county);
-// WriteNewMissingChildrenByCountyDS := OUTPUT(MissingChildrenByCountyDS,,'~HMK::OUT::MissingChildrenByCountyDS', NAMED('WriteMissingChildrenByCountyDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByCountyDS,-cnt),NAMED('MissingChildrenByCounty'));
+MissingChildrenByCountyDS:= TABLE(newDS,{county_fips,cnt := COUNT(GROUP)},county_fips);
+WriteNewMissingChildrenByCountyDS := OUTPUT(MissingChildrenByCountyDS,,'~HMK::OUT::MissingChildrenByCountyDS', NAMED('WriteMissingChildrenByCountyDS'), OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByCountyDS,-cnt), NAMED('MissingChildrenByCounty'));
 
 MissingChildrenByMonthDS:= TABLE(newDS,{monthOfMissing,cnt := COUNT(GROUP)},monthOfMissing);
-// WriteNewMissingChildrenByMonthDS := OUTPUT(MissingChildrenByMonthDS,,'~HMK::OUT::MissingChildrenByMonthDS', NAMED('WriteMissingChildrenByMonthDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByMonthDS,-monthOfMissing),NAMED('MissingChildrenByMonth'));
+WriteNewMissingChildrenByMonthDS := OUTPUT(MissingChildrenByMonthDS,,'~HMK::OUT::MissingChildrenByMonthDS', NAMED('WriteMissingChildrenByMonthDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByMonthDS,-monthOfMissing),NAMED('MissingChildrenByMonth'));
 
 MissingChildrenByYearDS:= TABLE(newDS,{yearOfMissing,cnt := COUNT(GROUP)},yearOfMissing);
-// WriteNewMissingChildrenByYearDS := OUTPUT(MissingChildrenByYearDS,,'~HMK::OUT::MissingChildrenByYearDS', NAMED('WriteMissingChildrenByYearDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByYearDS,yearOfMissing),NAMED('MissingChildrenByYear'));
+WriteNewMissingChildrenByYearDS := OUTPUT(MissingChildrenByYearDS,,'~HMK::OUT::MissingChildrenByYearDS', NAMED('WriteMissingChildrenByYearDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByYearDS,yearOfMissing),NAMED('MissingChildrenByYear'));
 
 MissingChildrenByDayDS:= TABLE(newDS,{dayOfMissing,cnt := COUNT(GROUP)},dayOfMissing);
-// WriteNewMissingChildrenByDayDS := OUTPUT(MissingChildrenByDayDS,,'~HMK::OUT::MissingChildrenByDayDS', NAMED('WriteMissingChildrenByDayDS'),OVERWRITE);   
-OUTPUT(SORT(MissingChildrenByDayDS,-dayOfMissing),NAMED('MissingChildrenByDay'));
+WriteNewMissingChildrenByDayDS := OUTPUT(MissingChildrenByDayDS,,'~HMK::OUT::MissingChildrenByDayDS', NAMED('WriteMissingChildrenByDayDS'),OVERWRITE);   
+// OUTPUT(SORT(MissingChildrenByDayDS,-dayOfMissing),NAMED('MissingChildrenByDay'));
 
 // SEQUENTIAL(WriteNewMissingChildrenByStateDS,WriteNewMissingChildrenByCountyDS,MissingChildrenByCountyDS2);
+IMPORT Visualizer;      
 
-IMPORT Visualizer;                    
-                    
-viz_year := Visualizer.MultiD.Area('area',, 'MissingChildrenByYear');
+
+viz_year := Visualizer.MultiD.Area('yearArea',, 'MissingChildrenByYear');
 viz_year;
- 
-viz_month := Visualizer.MultiD.Bar('bar',, 'MissingChildrenByMonth');
+
+viz_month := Visualizer.MultiD.Column('monthColumn',, 'MissingChildrenByMonth');
 viz_month;
 
-viz_day := Visualizer.MultiD.Column('column',, 'MissingChildrenByDay');
+viz_day := Visualizer.MultiD.Column('dayColumn',, 'MissingChildrenByDay');
 viz_day;
-
-
-// data_usStates := OUTPUT(_usStates, NAMED('choro_usStates'));  
-// data_usStates;  
-
-viz_states := Visualizer.Choropleth.USStates('usStates',, 'MissingChildrenByState');  
-viz_states;

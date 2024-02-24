@@ -5,7 +5,7 @@ EXPORT MissingChildrenDB:= MODULE
     END;
 
     EXPORT countyLayout := RECORD
-    STRING county_lips;
+    STRING county_fips;
     INTEGER cnt;
     END;
 
