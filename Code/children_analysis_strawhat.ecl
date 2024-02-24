@@ -77,7 +77,7 @@ WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT:
 
 MissingChildrenByCountyDS:= TABLE(newDS,{county_fips,cnt := COUNT(GROUP)},county_fips);
 WriteNewMissingChildrenByCountyDS := OUTPUT(MissingChildrenByCountyDS,,'~HMK::OUT::MissingChildrenByCountyDS', NAMED('WriteMissingChildrenByCountyDS'), OVERWRITE);   
-// OUTPUT(SORT(MissingChildrenByCountyDS,-cnt), NAMED('MissingChildrenByCounty'));
+OUTPUT(SORT(MissingChildrenByCountyDS,-cnt), NAMED('MissingChildrenByCounty'));
 
 MissingChildrenByMonthDS:= TABLE(newDS,{monthOfMissing,cnt := COUNT(GROUP)},monthOfMissing);
 WriteNewMissingChildrenByMonthDS := OUTPUT(MissingChildrenByMonthDS,,'~HMK::OUT::MissingChildrenByMonthDS', NAMED('WriteMissingChildrenByMonthDS'),OVERWRITE);   
@@ -103,3 +103,6 @@ viz_month;
 
 viz_day := Visualizer.MultiD.Column('dayColumn',, 'MissingChildrenByDay');
 viz_day;
+
+viz_counties := Visualizer.Choropleth.USCounties('USCounties',, 'MissingChildrenByCounty');
+viz_counties;
