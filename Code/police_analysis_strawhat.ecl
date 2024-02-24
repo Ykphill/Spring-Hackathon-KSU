@@ -2,11 +2,11 @@ IMPORT $, STD;
 
 // Retrieve Website, latitude, longitude, county, population, state, city
 HMK := $.File_AllData;
-hospitalDS := HMK.HospitalDS;
+policeDS := HMK.PoliceDS;
 missingChildDS := HMK.mc_byStateDS;
 citiesDS := HMK.City_DS;
 
-// OUTPUT(hospitalDS, NAMED('Hospital'));
+// OUTPUT(policeDS, NAMED('PoliceStation'));
 // OUTPUT(missingChildDS, NAMED('MissingChildren'));
 // OUTPUT(citiesDS, NAMED('Cities'));
 
@@ -20,10 +20,10 @@ cityLayout := RECORD
 END;
 
 locationLayout := RECORD
-    hospitalDS.city;
-    hospitalDS.state;
-    hospitalDS.zip;
-    hospitalDS.source;
+    policeDS.city;
+    policeDS.state;
+    policeDS.zip;
+    policeDS.source;
 END;
 
 cityLocation := TABLE(
@@ -32,7 +32,12 @@ cityLocation := TABLE(
     city
 );
 
+
 OUTPUT(cityLocation, NAMED('CityLocation'));
+
+// newDS := TABLE(policeDS,
+// locationLayout,
+// city);
 
 missingChildWithCitiesLayout := RECORD
     STRING name;
@@ -44,12 +49,12 @@ missingChildWithCitiesLayout := RECORD
 
 END;
 
-newDS := JOIN(hospitalDS, 
+policeStationDS := JOIN(policeDS, 
     cityLocation, 
     STD.Str.ToLowerCase(LEFT.city) = STD.Str.ToLowerCase(RIGHT.city),
     TRANSFORM(missingChildWithCitiesLayout,
-    SELF.lat := LEFT.latitude;
-    SELF.long := LEFT.longitude;
+    SELF.lat := LEFT.ycoor;
+    SELF.long := LEFT.xcoor;
     SELF.county := RIGHT.county_name;
     SELF.county_fips := RIGHT.county_fips;
     SELF.state := LEFT.state;
@@ -57,12 +62,16 @@ newDS := JOIN(hospitalDS,
     SELF := RIGHT;
 ));
 
-OUTPUT(newDS, NAMED('newDS'));
+OUTPUT(policeStationDS, NAMED('policeStationDS'));
 
-hospitalByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
-writeHospitalByState := OUTPUT(hospitalByState,, '~HMK::OUT::hospitalByState', NAMED('hospitalByState'));
-writeHospitalByState;
+policeByState := TABLE(policeStationDS,{state,cnt := COUNT(GROUP)}, state);
+writePoliceByState := OUTPUT(policeByState,, '~HMK::OUT::policeByState', NAMED('policeByState'),OVERWRITE);
+writePoliceByState;
 
-hospitalByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
-writeHospitalByCounty := OUTPUT(hospitalByCounty,, '~HMK::OUT::hospitalByCounty', NAMED('hospitalByCounty'));
-writeHospitalByCounty;
+policeByCounty := TABLE(policeStationDS,{county,cnt := COUNT(GROUP)}, county);
+writePoliceByCounty := OUTPUT(policeByCounty,, '~HMK::OUT::policeByCounty', NAMED('policeByCounty'),OVERWRITE);
+writePoliceByCounty;
+
+policeByFips := TABLE(policeStationDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
+writePoliceByFips := OUTPUT(policeByFips,, '~HMK::OUT::policeByFips', NAMED('policeByFips'),OVERWRITE);
+writePoliceByFips;

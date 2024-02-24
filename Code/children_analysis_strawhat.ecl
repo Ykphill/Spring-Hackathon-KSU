@@ -74,14 +74,6 @@ END;
 MissingChildrenByStateDS := TABLE(newDS,{state,cnt := COUNT(GROUP)},state);
 // WriteNewMissingChildrenByStateDS := OUTPUT(MissingChildrenByStateDS,,'~HMK::OUT::MissingChildrenByStateDS', NAMED('WriteMissingChildrenByStateDS'),OVERWRITE);
 OUTPUT(SORT(MissingChildrenByStateDS,-cnt),NAMED('MissingChildrenByState'));
-// CleanDS := DATASET('~HMK::OUT::MissingChildrenByStateDS',TEST_RECORD, FLAT); 
-
-// CleanChurchIDX     := INDEX(CleanDS,{city,state},{CleanChurchesDS},'~HMK::IDX::Church::CityPay');
-// CleanChurchFIPSIDX := INDEX(CleanDS,{PrimaryFIPS},{CleanChurchesDS},'~HMK::IDX::Church::FIPSPay');
-// BuildChurchIDX     := BUILD(CleanChurchIDX,NAMED('BldIDX1'),OVERWRITE);
-// BuildChurchFIPSIDX := BUILD(CleanChurchFIPSIDX,NAMED('BLDIDX2'),OVERWRITE);
-  
-// OUTPUT(MissingChildrenByStateDS, NAMED('TESTING'));
 
 
 MissingChildrenByCountyDS:= TABLE(newDS,{county,cnt := COUNT(GROUP)},county);

@@ -2,13 +2,12 @@ IMPORT $, STD;
 
 // Retrieve Website, latitude, longitude, county, population, state, city
 HMK := $.File_AllData;
-hospitalDS := HMK.HospitalDS;
-missingChildDS := HMK.mc_byStateDS;
+foodDS := HMK.FoodBankDS;
 citiesDS := HMK.City_DS;
 
-// OUTPUT(hospitalDS, NAMED('Hospital'));
+OUTPUT(foodDS, NAMED('foodBankDS'));
 // OUTPUT(missingChildDS, NAMED('MissingChildren'));
-// OUTPUT(citiesDS, NAMED('Cities'));
+OUTPUT(citiesDS, NAMED('Cities'));
 
 cityLayout := RECORD
     citiesDS.city;
@@ -20,10 +19,10 @@ cityLayout := RECORD
 END;
 
 locationLayout := RECORD
-    hospitalDS.city;
-    hospitalDS.state;
-    hospitalDS.zip;
-    hospitalDS.source;
+    foodDS.city;
+    foodDS.state;
+    foodDS.zip_code;
+    foodDS.web_page;
 END;
 
 cityLocation := TABLE(
@@ -32,24 +31,24 @@ cityLocation := TABLE(
     city
 );
 
-OUTPUT(cityLocation, NAMED('CityLocation'));
+// OUTPUT(cityLocation, NAMED('CityLocation'));
 
 missingChildWithCitiesLayout := RECORD
-    STRING name;
+    STRING food_bank_name;
     STRING state;
     STRING county;
     STRING county_fips;
-    DECIMAL lat;
-    DECIMAL long;
+    // DECIMAL lat;
+    // DECIMAL long;
 
 END;
 
-newDS := JOIN(hospitalDS, 
+newDS := JOIN(foodDS, 
     cityLocation, 
     STD.Str.ToLowerCase(LEFT.city) = STD.Str.ToLowerCase(RIGHT.city),
     TRANSFORM(missingChildWithCitiesLayout,
-    SELF.lat := LEFT.latitude;
-    SELF.long := LEFT.longitude;
+    // SELF.lat := .latitude;
+    // SELF.long := LEFT.longitude;
     SELF.county := RIGHT.county_name;
     SELF.county_fips := RIGHT.county_fips;
     SELF.state := LEFT.state;
@@ -59,10 +58,10 @@ newDS := JOIN(hospitalDS,
 
 OUTPUT(newDS, NAMED('newDS'));
 
-hospitalByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
-writeHospitalByState := OUTPUT(hospitalByState,, '~HMK::OUT::hospitalByState', NAMED('hospitalByState'));
-writeHospitalByState;
+foodBankByState := TABLE(newDS,{state,cnt := COUNT(GROUP)}, state);
+writeFoodBankByState := OUTPUT(foodBankByState,, '~HMK::OUT::foodBankByState', NAMED('foodBankByState'));
+writeFoodBankByState;
 
-hospitalByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
-writeHospitalByCounty := OUTPUT(hospitalByCounty,, '~HMK::OUT::hospitalByCounty', NAMED('hospitalByCounty'));
-writeHospitalByCounty;
+foodBankByCounty := TABLE(newDS,{county_fips,cnt := COUNT(GROUP)}, county_fips);
+writeFoodBankByCounty := OUTPUT(foodBankByCounty,, '~HMK::OUT::foodBankByCounty', NAMED('foodBankByCounty'));
+writeFoodBankByCounty;
