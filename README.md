@@ -1,6 +1,9 @@
-STRAW HATS AI CLUB HACKATHON
-2ND PLACE VICTORY
-============================
-KESHUAN BERRY
-PHILLIP BELL
-BRANDEN CHEN
+# Spring-Hackathon-KSU
+========================
+Team Strawhats!
+Phillip Bell, KeShaun Berry, Branden Chen
+
+High Performance Computing Cluster
+
+https://hpccsystems.com/training/documentation/learning-ecl/
+https://solutionslab.hpccsystems.com/learn-ecl/topn/
